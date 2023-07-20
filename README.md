@@ -15,7 +15,7 @@ Prerequisites
 Before running this program, ensure you have the following:
 1. Python 3.6 or later
 2. Pulumi CLI
-3. AWS Account and configured AWS credentials
+3. AWS Account and configured AWS credentials, Prepare for a IAM user (iac_user) with sufficent permission for the depployment
 
 Quick Start
 1. Clone this repository and navigate to the repo's root directory in your terminal.
