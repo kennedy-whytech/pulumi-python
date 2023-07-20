@@ -13,39 +13,38 @@ Key Features
 
 Prerequisites
 Before running this program, ensure you have the following:
-"""
-Python 3.6 or later
-Pulumi CLI
-AWS Account and configured AWS credentials
-Quick Start
-Clone this repository and navigate to the repo's root directory in your terminal.
-"""
+1. Python 3.6 or later
+2. Pulumi CLI
+3. AWS Account and configured AWS credentials
 
-"""
+Quick Start
+1. Clone this repository and navigate to the repo's root directory in your terminal.
+
+```
 git clone https://github.com/your-username/your-repo-name.git
 cd your-repo-name
-"""
+```
 
-Install the required Python packages:
-"""
+2. Install the required Python packages:
+```
 pip install -r requirements.txt
-"""
+```
 
-Set your AWS region e.g:
-"""
+3. Set your AWS region e.g:
+```
 pulumi config set aws:region us-west-2
-"""
-Deploy the stack:
-"""
+```
+4. Modify whatever images you would like to build/deploy and deploy the stack:
+```
 pulumi up
-"""
+```
 
 The pulumi up command creates and updates resources in your stack. You will be prompted to confirm these actions before they occur.
 
 After the stack has been deployed, Pulumi will print out the URL of the load balancer. Visit the URL to view the web UI.
 
-Clean up your resources:
-"""
+5. Clean up your resources:
+```
 pulumi destroy
-"""
+```
 Remember to destroy your resources when you're done to avoid unnecessary AWS charges!
