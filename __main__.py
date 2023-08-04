@@ -6,8 +6,11 @@ from pulumi import Output, export, get_stack
 from pulumi_aws import Provider, ecr, ecs, ec2, lb, get_availability_zones, autoscaling, iam, cloudwatch
 import pulumi_awsx as awsx
 import json
+import os
 
-azs = get_availability_zones(state="available")
+azs_state =  os.environ.get("AZS_STATE", "available")
+
+azs = get_availability_zones(state=azs_state)
 
 # Define shared tags
 stack_name = get_stack()
@@ -198,7 +201,7 @@ web_ui_app_sg = ec2.SecurityGroup('web-ui-app-sg',
                                           protocol='tcp',
                                           from_port=5000,
                                           to_port=5000,
-                                          cidr_blocks=['0.0.0.0/0'],
+                                          security_groups=[web_ui_lb_sg.id]
                                       )
                                   ],
                                   egress=[
@@ -211,29 +214,6 @@ web_ui_app_sg = ec2.SecurityGroup('web-ui-app-sg',
                                   ],
                                   tags=tags,
                                   )
-
-web_api_app_sg = ec2.SecurityGroup('web-api-app-sg',
-                                   description='Allow inbound access from the public subnet',
-                                   vpc_id=vpc.id,
-                                   ingress=[
-                                       ec2.SecurityGroupIngressArgs(
-                                           protocol='tcp',
-                                           from_port=5000,
-                                           to_port=5000,
-                                           #    cidr_blocks=public_subnet_cidr_blocks+private_subnet_cidr_blocks
-                                           cidr_blocks=['0.0.0.0/0'],
-                                       )
-                                   ],
-                                   egress=[
-                                       ec2.SecurityGroupEgressArgs(
-                                           protocol="-1",
-                                           from_port=0,
-                                           to_port=0,
-                                           cidr_blocks=['0.0.0.0/0'],
-                                       )
-                                   ],
-                                   tags=tags,
-                                   )
 
 web_api_lb_sg = ec2.SecurityGroup('web-api-lb-sg',
                                   description='Allow inbound access from the public subnet',
@@ -257,6 +237,31 @@ web_api_lb_sg = ec2.SecurityGroup('web-api-lb-sg',
                                   ],
                                   tags=tags,
                                   )
+
+web_api_app_sg = ec2.SecurityGroup('web-api-app-sg',
+                                   description='Allow inbound access from the public subnet',
+                                   vpc_id=vpc.id,
+                                   ingress=[
+                                       ec2.SecurityGroupIngressArgs(
+                                           protocol='tcp',
+                                           from_port=5000,
+                                           to_port=5000,
+                                           #    cidr_blocks=public_subnet_cidr_blocks+private_subnet_cidr_blocks
+                                           security_groups=[web_api_lb_sg.id],
+                                       )
+                                   ],
+                                   egress=[
+                                       ec2.SecurityGroupEgressArgs(
+                                           protocol="-1",
+                                           from_port=0,
+                                           to_port=0,
+                                           cidr_blocks=['0.0.0.0/0'],
+                                       )
+                                   ],
+                                   tags=tags,
+                                   )
+
+
 
 # Create the ECS Cluster
 cluster_name = "web-cluster"
