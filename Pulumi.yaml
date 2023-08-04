@@ -1,4 +1,4 @@
-name: airtek-pulumi-pythoon
+name: pulumi-python
 runtime:
   name: python
   options:
